@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>smsboosting 博客数据分析报告 · 2026年07月</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green-900: #0F1A14;
+  --green-700: #1C6B38;
+  --green-500: #2B8C4A;
+  --green-200: #D6E8D8;
+  --green-50:  #F0F7F1;
+  --ink:       #1A1F1C;
+  --ink-80:    #2D3330;
+  --muted:     #6B726E;
+  --muted-40:  #A8AEA9;
+  --paper:     #FAFBF9;
+  --white:     #FFFFFF;
+  --radius:    12px;
+  --shadow:    0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--ink-80);
+  background: var(--paper);
+  line-height: 1.6;
+}
+.report { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+.report-header {
+  padding: 48px 0 32px;
+  border-bottom: 1px solid var(--green-200);
+  margin-bottom: 40px;
+}
+.report-header__meta { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.report-header__tag {
+  display: inline-block; background: var(--green-700); color: var(--white);
+  font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 999px;
+}
+.report-header__date { font-size: 13px; color: var(--muted); }
+.report-header h1 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(28px, 3.5vw, 40px); font-weight: 400;
+  color: var(--green-900); line-height: 1.15; letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.report-header__sub { font-size: 14px; color: var(--muted); }
+.section { margin-bottom: 48px; }
+.section h2 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 24px; font-weight: 400; color: var(--green-900);
+  margin-bottom: 20px; padding-bottom: 8px;
+  border-bottom: 2px solid var(--green-200);
+}
+.section h3 { font-size: 16px; font-weight: 600; color: var(--green-700); margin-bottom: 16px; letter-spacing: -0.01em; }
+.summary-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px; margin-bottom: 24px;
+}
+.summary-card {
+  background: var(--white); border: 1px solid var(--green-200);
+  border-radius: var(--radius); padding: 20px 16px; text-align: center;
+  box-shadow: var(--shadow); transition: transform 0.15s;
+}
+.summary-card:hover { transform: translateY(-2px); }
+.summary-card .value {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 28px; color: var(--green-700);
+}
+.summary-card .label { font-size: 12px; color: var(--muted); margin-top: 4px; font-weight: 500; }
+.change-badge { display: inline-block; margin-top: 8px; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: 0.3px; }
+.change-badge.up { background: var(--green-50); color: var(--green-700); }
+.change-badge.down { background: #FDE8E8; color: #B91C1C; }
+.change-badge.flat { background: #EDEDE8; color: #6A6A5A; }
+.analysis-box {
+  background: var(--white); border: 1px solid var(--green-200);
+  border-radius: var(--radius); padding: 20px 24px; margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.analysis-box strong { color: var(--green-900); font-weight: 600; }
+.analysis-box ol, .analysis-box ul { margin: 8px 0 0 20px; padding: 0; }
+.analysis-box li { margin-bottom: 6px; font-size: 14px; }
+.analysis-box li:last-child { margin-bottom: 0; }
+.badge { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.badge.up { background: var(--green-50); color: var(--green-700); }
+.badge.down { background: #FDE8E8; color: #B91C1C; }
+.badge.flat { background: #EDEDE8; color: #6A6A5A; }
+.badge.new { background: #DDE6FF; color: #1A4A7A; font-weight: 600; }
+.pct { font-weight: 700; }
+.pct.up { color: var(--green-700); }
+.pct.down { color: #B91C1C; }
+.table-wrap {
+  overflow-x: auto; margin-bottom: 20px;
+  border-radius: var(--radius); border: 1px solid var(--green-200);
+  box-shadow: var(--shadow);
+}
+table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--white); }
+thead th {
+  background: var(--green-700); color: var(--white); font-weight: 600;
+  font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase;
+  text-align: left; padding: 10px 12px; white-space: nowrap;
+}
+tbody td { padding: 8px 12px; border-bottom: 1px solid var(--green-200); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:nth-child(even) { background: var(--green-50); }
+tbody tr:hover { background: #E4F0E6; }
+.section-block {
+  background: var(--white); border: 1px solid var(--green-200);
+  border-radius: var(--radius); padding: 20px 24px; box-shadow: var(--shadow);
+}
+.section-block ul { margin: 8px 0 0 20px; }
+.section-block li { margin-bottom: 6px; font-size: 14px; }
+.report-footer {
+  text-align: center; padding: 32px 0 48px;
+  border-top: 1px solid var(--green-200);
+  color: var(--muted-40); font-size: 12px;
+}
+@media (max-width: 640px) {
+  .report { padding: 0 16px; }
+  .report-header { padding: 32px 0 24px; }
+  .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  .analysis-box, .section-block { padding: 16px; }
+  table { font-size: 12px; }
+  thead th, tbody td { padding: 6px 8px; }
+}
+</style>
+</head>
+<body>
+<div class="report">
+
+<header class="report-header">
+  <div class="report-header__meta">
+    <span class="report-header__tag">Analytics Report</span>
+    <span class="report-header__date">2026年07月 · 环比 2026年06月</span>
+  </div>
+  <h1>SMSBoosting<br>博客数据分析报告</h1>
+  <p class="report-header__sub">Google Search Console + GA4 数据 · 涵盖搜索表现、社媒引流效果与优化建议</p>
+  <p class="report-header__sub" style="margin-top:6px;color:#B45309;">数据覆盖说明：2026-07-01 ~ 2026-07-30（GSC 按天数据截至 07-29；GA4 最后 1–2 天数据可能不完整）</p>
+</header>
+
+
+  <section class="section">
+    <h2>一、博客自然搜索表现</h2>
+
+    <h3>搜索表现总览</h3>
+    
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="value">72,952</div>
+        <div class="label">当月总展示次数</div>
+        <div class="change-badge up">↑ +155.5%</div>
+      </div>
+      <div class="summary-card">
+        <div class="value">786</div>
+        <div class="label">当月总点击</div>
+        <div class="change-badge up">↑ +67.7%</div>
+      </div>
+      <div class="summary-card">
+        <div class="value">1.1%</div>
+        <div class="label">平均 CTR</div>
+        <div class="change-badge flat">持平</div>
+      </div>
+      <div class="summary-card">
+        <div class="value">21.1</div>
+        <div class="label">平均排名</div>
+        <div class="change-badge up">↑ 提升 0.5</div>
+      </div>
+    </div>
+
+    <div class="analysis-box">
+      <strong>要点分析</strong>
+      <p style="margin-top:8px;font-size:14px;">2026年07月，SMSBoosting 在 Google 搜索中的展示量达到 <strong>72,952 次</strong>，点击量 <strong>786</strong>，整体搜索曝光量持续增长。</p>
+    </div>
+
+    <h3>Top 搜索查询词</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>搜索词</th>
+            <th style="text-align:right;">当月点击</th>
+            <th style="text-align:right;">当月展示</th>
+            <th style="text-align:right;">CTR</th>
+            <th style="text-align:right;">排名</th>
+            <th style="text-align:right;">上月点击</th>
+            <th>环比变化</th>
+          </tr>
+        </thead>
+        <tbody>
+              <tr><td>sms boost</td><td style="text-align:right;">75</td><td style="text-align:right;">2351</td><td style="text-align:right;">3.2%</td><td style="text-align:right;">5.9</td><td style="text-align:right;">33</td><td><span class="badge up">↑ +127.3%</span></td></tr>
+          <tr><td>smsboosting</td><td style="text-align:right;">71</td><td style="text-align:right;">111</td><td style="text-align:right;">64.0%</td><td style="text-align:right;">1.0</td><td style="text-align:right;">58</td><td><span class="badge up">↑ +22.4%</span></td></tr>
+          <tr><td>sms gratis</td><td style="text-align:right;">17</td><td style="text-align:right;">64</td><td style="text-align:right;">26.6%</td><td style="text-align:right;">4.3</td><td style="text-align:right;">—</td><td><span class="badge new">新进入</span></td></tr>
+          <tr><td>sms boosting</td><td style="text-align:right;">13</td><td style="text-align:right;">27</td><td style="text-align:right;">48.1%</td><td style="text-align:right;">1.9</td><td style="text-align:right;">13</td><td><span class="badge flat">持平</span></td></tr>
+          <tr><td>otp sms</td><td style="text-align:right;">5</td><td style="text-align:right;">396</td><td style="text-align:right;">1.3%</td><td style="text-align:right;">17.8</td><td style="text-align:right;">3</td><td><span class="badge up">↑ +66.7%</span></td></tr>
+          <tr><td>smsboost</td><td style="text-align:right;">5</td><td style="text-align:right;">33</td><td style="text-align:right;">15.2%</td><td style="text-align:right;">2.7</td><td style="text-align:right;">—</td><td><span class="badge new">新进入</span></td></tr>
+          <tr><td>sms booster</td><td style="text-align:right;">4</td><td style="text-align:right;">19</td><td style="text-align:right;">21.1%</td><td style="text-align:right;">12.3</td><td style="text-align:right;">—</td><td><span class="badge new">新进入</span></td></tr>
+          <tr><td>kirim sms gratis online</td><td style="text-align:right;">3</td><td style="text-align:right;">8</td><td style="text-align:right;">37.5%</td><td style="text-align:right;">6.8</td><td style="text-align:right;">—</td><td><span class="badge new">新进入</span></td></tr>
+          <tr><td>sms otp</td><td style="text-align:right;">3</td><td style="text-align:right;">302</td><td style="text-align:right;">1.0%</td><td style="text-align:right;">14.7</td><td style="text-align:right;">4</td><td><span class="badge down">↓ -25.0%</span></td></tr>
+          <tr><td>besplatni sms</td><td style="text-align:right;">2</td><td style="text-align:right;">9</td><td style="text-align:right;">22.2%</td><td style="text-align:right;">9.4</td><td style="text-align:right;">1</td><td><span class="badge up">↑ +100.0%</span></td></tr>
+          <tr><td>boost sms</td><td style="text-align:right;">2</td><td style="text-align:right;">69</td><td style="text-align:right;">2.9%</td><td style="text-align:right;">12.2</td><td style="text-align:right;">1</td><td><span class="badge up">↑ +100.0%</span></td></tr>
+          <tr><td>booster sms</td><td style="text-align:right;">2</td><td style="text-align:right;">7</td><td style="text-align:right;">28.6%</td><td style="text-align:right;">3.3</td><td style="text-align:right;">1</td><td><span class="badge up">↑ +100.0%</span></td></tr>
+          <tr><td>free sms gratis</td><td style="text-align:right;">2</td><td style="text-align:right;">4</td><td style="text-align:right;">50.0%</td><td style="text-align:right;">1.0</td><td style="text-align:right;">—</td><td><span class="badge new">新进入</span></td></tr>
+          <tr><td>kirim sms gratis</td><td style="text-align:right;">2</td><td style="text-align:right;">5</td><td style="text-align:right;">40.0%</td><td style="text-align:right;">5.4</td><td style="text-align:right;">—</td><td><span class="badge new">新进入</span></td></tr>
+          <tr><td>message pas encore distribué</td><td style="text-align:right;">2</td><td style="text-align:right;">71</td><td style="text-align:right;">2.8%</td><td style="text-align:right;">7.9</td><td style="text-align:right;">—</td><td><span class="badge new">新进入</span></td></tr>
+          <tr><td>nemokami sms</td><td style="text-align:right;">2</td><td style="text-align:right;">46</td><td style="text-align:right;">4.3%</td><td style="text-align:right;">6.2</td><td style="text-align:right;">—</td><td><span class="badge new">新进入</span></td></tr>
+          <tr><td>otp смс</td><td style="text-align:right;">2</td><td style="text-align:right;">13</td><td style="text-align:right;">15.4%</td><td style="text-align:right;">3.7</td><td style="text-align:right;">—</td><td><span class="badge new">新进入</span></td></tr>
+          <tr><td>otpsms</td><td style="text-align:right;">2</td><td style="text-align:right;">57</td><td style="text-align:right;">3.5%</td><td style="text-align:right;">7.3</td><td style="text-align:right;">1</td><td><span class="badge up">↑ +100.0%</span></td></tr>
+          <tr><td>sms non distribué</td><td style="text-align:right;">2</td><td style="text-align:right;">75</td><td style="text-align:right;">2.7%</td><td style="text-align:right;">8.6</td><td style="text-align:right;">—</td><td><span class="badge new">新进入</span></td></tr>
+          <tr><td>sms pas encore distribué</td><td style="text-align:right;">2</td><td style="text-align:right;">58</td><td style="text-align:right;">3.4%</td><td style="text-align:right;">6.9</td><td style="text-align:right;">—</td><td><span class="badge new">新进入</span></td></tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Top 博客文章（GSC 搜索）</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>文章</th>
+            <th style="text-align:right;">当月点击</th>
+            <th style="text-align:right;">当月展示</th>
+            <th style="text-align:right;">CTR</th>
+            <th style="text-align:right;">排名</th>
+            <th style="text-align:right;">上月点击</th>
+            <th>环比变化</th>
+          </tr>
+        </thead>
+        <tbody>
+              <tr><td>https://smsboosting.com/</td><td style="text-align:right;">186</td><td style="text-align:right;">2666</td><td style="text-align:right;">7.0%</td><td style="text-align:right;">5.9</td><td style="text-align:right;">123</td><td><span class="badge up">↑ +51.2%</span></td></tr>
+          <tr><td>https://smsboosting.com/fr/why-sms-messages-are...</td><td style="text-align:right;">40</td><td style="text-align:right;">3591</td><td style="text-align:right;">1.1%</td><td style="text-align:right;">8.3</td><td style="text-align:right;">10</td><td><span class="badge up">↑ +300.0%</span></td></tr>
+          <tr><td>https://smsboosting.com/id/how-to-send-free-sms/</td><td style="text-align:right;">37</td><td style="text-align:right;">268</td><td style="text-align:right;">13.8%</td><td style="text-align:right;">7.2</td><td style="text-align:right;">—</td><td><span class="badge new">新进入</span></td></tr>
+          <tr><td>https://smsboosting.com/sms-gateway-pakistan/</td><td style="text-align:right;">18</td><td style="text-align:right;">800</td><td style="text-align:right;">2.2%</td><td style="text-align:right;">7.9</td><td style="text-align:right;">—</td><td><span class="badge new">新进入</span></td></tr>
+          <tr><td>https://smsboosting.com/ro/promotional-text-mes...</td><td style="text-align:right;">16</td><td style="text-align:right;">341</td><td style="text-align:right;">4.7%</td><td style="text-align:right;">7.8</td><td style="text-align:right;">12</td><td><span class="badge up">↑ +33.3%</span></td></tr>
+          <tr><td>https://smsboosting.com/lt/how-to-send-free-sms/</td><td style="text-align:right;">14</td><td style="text-align:right;">374</td><td style="text-align:right;">3.7%</td><td style="text-align:right;">8.9</td><td style="text-align:right;">—</td><td><span class="badge new">新进入</span></td></tr>
+          <tr><td>https://smsboosting.com/hr/why-sms-messages-are...</td><td style="text-align:right;">13</td><td style="text-align:right;">513</td><td style="text-align:right;">2.5%</td><td style="text-align:right;">5.7</td><td style="text-align:right;">4</td><td><span class="badge up">↑ +225.0%</span></td></tr>
+          <tr><td>https://smsboosting.com/ru/otp-sms-guide/</td><td style="text-align:right;">13</td><td style="text-align:right;">2569</td><td style="text-align:right;">0.5%</td><td style="text-align:right;">10.1</td><td style="text-align:right;">9</td><td><span class="badge up">↑ +44.4%</span></td></tr>
+          <tr><td>https://smsboosting.com/hr/can-you-send-bulk-sm...</td><td style="text-align:right;">12</td><td style="text-align:right;">183</td><td style="text-align:right;">6.6%</td><td style="text-align:right;">8.5</td><td style="text-align:right;">6</td><td><span class="badge up">↑ +100.0%</span></td></tr>
+          <tr><td>https://smsboosting.com/el/otp-sms-delivery-fai...</td><td style="text-align:right;">9</td><td style="text-align:right;">348</td><td style="text-align:right;">2.6%</td><td style="text-align:right;">8.0</td><td style="text-align:right;">—</td><td><span class="badge new">新进入</span></td></tr>
+          <tr><td>https://smsboosting.com/2026-fifa-world-cup-sms...</td><td style="text-align:right;">8</td><td style="text-align:right;">474</td><td style="text-align:right;">1.7%</td><td style="text-align:right;">22.2</td><td style="text-align:right;">16</td><td><span class="badge down">↓ -50.0%</span></td></tr>
+          <tr><td>https://smsboosting.com/id/sms-otp-alternative/</td><td style="text-align:right;">8</td><td style="text-align:right;">658</td><td style="text-align:right;">1.2%</td><td style="text-align:right;">13.1</td><td style="text-align:right;">—</td><td><span class="badge new">新进入</span></td></tr>
+          <tr><td>https://smsboosting.com/cs/why-sms-messages-are...</td><td style="text-align:right;">6</td><td style="text-align:right;">419</td><td style="text-align:right;">1.4%</td><td style="text-align:right;">6.8</td><td style="text-align:right;">5</td><td><span class="badge up">↑ +20.0%</span></td></tr>
+          <tr><td>https://smsboosting.com/el/how-to-send-free-sms/</td><td style="text-align:right;">6</td><td style="text-align:right;">128</td><td style="text-align:right;">4.7%</td><td style="text-align:right;">17.8</td><td style="text-align:right;">—</td><td><span class="badge new">新进入</span></td></tr>
+          <tr><td>https://smsboosting.com/fr/financial-industry/c...</td><td style="text-align:right;">6</td><td style="text-align:right;">27</td><td style="text-align:right;">22.2%</td><td style="text-align:right;">6.0</td><td style="text-align:right;">—</td><td><span class="badge new">新进入</span></td></tr>
+          <tr><td>https://smsboosting.com/pl/spam-text-message-ex...</td><td style="text-align:right;">6</td><td style="text-align:right;">70</td><td style="text-align:right;">8.6%</td><td style="text-align:right;">11.0</td><td style="text-align:right;">6</td><td><span class="badge flat">持平</span></td></tr>
+          <tr><td>https://smsboosting.com/ro/spam-text-message-ex...</td><td style="text-align:right;">6</td><td style="text-align:right;">111</td><td style="text-align:right;">5.4%</td><td style="text-align:right;">6.6</td><td style="text-align:right;">9</td><td><span class="badge down">↓ -33.3%</span></td></tr>
+          <tr><td>https://smsboosting.com/tr/</td><td style="text-align:right;">6</td><td style="text-align:right;">69</td><td style="text-align:right;">8.7%</td><td style="text-align:right;">23.4</td><td style="text-align:right;">—</td><td><span class="badge new">新进入</span></td></tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <h3>搜索趋势</h3>
+    <div class="section-block">
+      <strong style="color:var(--green-900);">2026年07月 搜索趋势概览</strong>
+      <ul>
+        <li><strong>月初（1–10 日）：</strong>展示量波动上升，搜索曝光稳步增长。</li>
+        <li><strong>月中（11–20 日）：</strong>维持高位运行，整体趋势平稳。</li>
+        <li><strong>下旬（21–30 日）：</strong>展示量显著攀升，最后 10 天占全月较高比例。</li>
+      </ul>
+    </div>
+
+    <h3 style="margin-top:36px;">下一步动作</h3>
+    <div class="analysis-box">
+      <ol>
+        <li><strong>高展示低 CTR 页面优化</strong> — 针对展示量大但点击率偏低的页面，优化 Title 标签和 Meta Description，加入行动号召。</li>
+        <li><strong>内容缺口关键词布局</strong> — 关注展示量大但品牌排名不够靠前的查询词，补充针对性内容。</li>
+        <li><strong>多语言 SEO 持续优化</strong> — 多语言页面持续获得搜索展示，建议监控关键词排名变化，补充本地化内容。</li>
+        <li><strong>品牌词扩展</strong> — 品牌词排名稳定，可考虑内链策略进一步提升曝光。</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>二、社媒引流效果</h2>
+
+    <h3>社媒渠道对博客的引流效果</h3>
+    <div class="analysis-box">
+      <strong>GA4 渠道数据</strong>
+      <ul>
+        <li><strong>Organic Social：</strong>42 次浏览量（占全站 20.5%）</li>
+        <li><strong>Organic Search：</strong>1116 次浏览量</li>
+      </ul>
+
+      <p style="margin-top:16px;"><strong>流量来源分布</strong></p>
+      <div class="table-wrap" style="margin-top:8px;">
+        <table>
+          <thead>
+            <tr>
+              <th>渠道</th>
+              <th style="text-align:right;">浏览量</th>
+              <th style="text-align:right;">占比</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr><td>Paid Search</td><td style="text-align:right;">3307</td><td style="text-align:right;">60.7%</td></tr>
+          <tr><td>Organic Search</td><td style="text-align:right;">1116</td><td style="text-align:right;">20.5%</td></tr>
+          <tr><td>Direct</td><td style="text-align:right;">853</td><td style="text-align:right;">15.7%</td></tr>
+          <tr><td>Referral</td><td style="text-align:right;">43</td><td style="text-align:right;">0.8%</td></tr>
+          <tr><td>Organic Social</td><td style="text-align:right;">42</td><td style="text-align:right;">0.8%</td></tr>
+          <tr><td>Cross-network</td><td style="text-align:right;">39</td><td style="text-align:right;">0.7%</td></tr>
+          <tr><td>AI Assistant</td><td style="text-align:right;">22</td><td style="text-align:right;">0.4%</td></tr>
+          <tr><td>Unassigned</td><td style="text-align:right;">22</td><td style="text-align:right;">0.4%</td></tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <p style="margin-top:16px;"><strong>分析</strong></p>
+      <ul>
+        <li>全站流量主要由付费搜索驱动（3307 次，60.7%）。</li>
+        <li>自然搜索占比 20.5%，仍有较大提升空间。</li>
+        <li>社媒引流效果有限，在社交帖子中统一使用 UTM 追踪参数。</li>
+      </ul>
+    </div>
+  </section>
+
+
+<footer class="report-footer">
+  SMSBoosting Analytics Report · 2026年07月<br>
+  数据来源：Google Search Console + Google Analytics 4
+</footer>
+
+</div>
+</body>
+</html>
