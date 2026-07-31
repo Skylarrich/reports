@@ -141,7 +141,6 @@ tbody tr:hover { background: #E4F0E6; }
   </div>
   <h1>SMSBoosting<br>博客数据分析报告</h1>
   <p class="report-header__sub">Google Search Console + GA4 数据 · 涵盖搜索表现、社媒引流效果与优化建议</p>
-  <p class="report-header__sub" style="margin-top:6px;color:#B45309;">数据覆盖说明：2026-07-01 ~ 2026-07-30（GSC 按天数据截至 07-29；GA4 最后 1–2 天数据可能不完整）</p>
 </header>
 
 
@@ -282,13 +281,13 @@ tbody tr:hover { background: #E4F0E6; }
 
     <h3>社媒渠道对博客的引流效果</h3>
     <div class="analysis-box">
-      <strong>GA4 渠道数据</strong>
+      <strong>GA4 渠道数据（仅自然流量）</strong>
       <ul>
-        <li><strong>Organic Social：</strong>42 次浏览量（占全站 20.5%）</li>
-        <li><strong>Organic Search：</strong>1116 次浏览量</li>
+        <li><strong>Organic Social：</strong>42 次浏览量（占自然流量 3.6%）</li>
+        <li><strong>Organic Search：</strong>1116 次浏览量（占自然流量 96.4%）</li>
       </ul>
 
-      <p style="margin-top:16px;"><strong>流量来源分布</strong></p>
+      <p style="margin-top:16px;"><strong>自然流量来源分布</strong></p>
       <div class="table-wrap" style="margin-top:8px;">
         <table>
           <thead>
@@ -299,14 +298,8 @@ tbody tr:hover { background: #E4F0E6; }
             </tr>
           </thead>
           <tbody>
-              <tr><td>Paid Search</td><td style="text-align:right;">3307</td><td style="text-align:right;">60.7%</td></tr>
-          <tr><td>Organic Search</td><td style="text-align:right;">1116</td><td style="text-align:right;">20.5%</td></tr>
-          <tr><td>Direct</td><td style="text-align:right;">853</td><td style="text-align:right;">15.7%</td></tr>
-          <tr><td>Referral</td><td style="text-align:right;">43</td><td style="text-align:right;">0.8%</td></tr>
-          <tr><td>Organic Social</td><td style="text-align:right;">42</td><td style="text-align:right;">0.8%</td></tr>
-          <tr><td>Cross-network</td><td style="text-align:right;">39</td><td style="text-align:right;">0.7%</td></tr>
-          <tr><td>AI Assistant</td><td style="text-align:right;">22</td><td style="text-align:right;">0.4%</td></tr>
-          <tr><td>Unassigned</td><td style="text-align:right;">22</td><td style="text-align:right;">0.4%</td></tr>
+              <tr><td>Organic Search</td><td style="text-align:right;">1116</td><td style="text-align:right;">96.4%</td></tr>
+          <tr><td>Organic Social</td><td style="text-align:right;">42</td><td style="text-align:right;">3.6%</td></tr>
 
           </tbody>
         </table>
@@ -314,9 +307,9 @@ tbody tr:hover { background: #E4F0E6; }
 
       <p style="margin-top:16px;"><strong>分析</strong></p>
       <ul>
-        <li>全站流量主要由付费搜索驱动（3307 次，60.7%）。</li>
-        <li>自然搜索占比 20.5%，仍有较大提升空间。</li>
-        <li>社媒引流效果有限，在社交帖子中统一使用 UTM 追踪参数。</li>
+        <li>自然搜索贡献 1116 次浏览量（占自然流量 96.4%），是博客流量的主要自然来源。</li>
+        <li>Organic Social 贡献 42 次浏览量（占自然流量 3.6%），社媒引流效果有限。</li>
+        <li>建议在社交帖子中统一使用 UTM 追踪参数，以便更精确评估各平台引流效果。</li>
       </ul>
     </div>
   </section>
